@@ -1,63 +1,55 @@
-import { searchForWorkspaceRoot } from 'vite'
-
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+
   devServer: {
     port: 3002
   },
-
+ // Configuration Supabase
+  supabase: {
+    redirect: false,
+  },
+  pages: true,
   modules: [
-    '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    '@nuxtjs/supabase',
-    '@vite-pwa/nuxt'
+      'nuxt-icon',
+      '@nuxtjs/tailwindcss',
+      '@nuxtjs/supabase',
+      '@pinia/nuxt',
+      "@vite-pwa/nuxt",
   ],
-
-  app: {
-    head: {
-      title: 'Mon App Sociale',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-      ]
+  runtimeConfig: {
+    public: {
+      bucketUrl: process.env.BUCKET_URL
     }
   },
-
-  vite: {
-    server: {
-      fs: {
-        allow: [
-          searchForWorkspaceRoot(process.cwd()),
-          // Ajoutez d'autres chemins si nécessaire
-        ]
-      }
-    }
-  },
-
-  // Ajout de la configuration PWA
+  devtools: { enabled: false },
   pwa: {
     manifest: {
-      name: 'Mon App Sociale',
-      short_name: 'Social App',
-      theme_color: '#ffffff',
-      background_color: '#ffffff',
-      display: 'standalone',
+      name: "My Social APP",
+      short_name: "uga-social-app",
+      description: "This is a social app",
+      theme_color: "#000000",
       icons: [
         {
-          src: '/pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png'
+          src: "pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: '/pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png'
-        }
-      ]
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
     },
-    workbox: {
-      navigateFallback: '/'
-    }
+    devOptions: {
+      enabled: true,
+      type: "module",
+    },
   },
-
-  compatibilityDate: '2024-12-09'
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+    }
+  }
 })

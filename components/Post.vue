@@ -131,7 +131,7 @@ const deletePost = async (id, picture) => {
         isDeleting.value = true
         const { data, error } = await client
             .storage
-            .from('threads-c-files')
+            .from('uga-clone-files')
             .remove([picture])
 
         await useFetch(`/api/delete-post/${id}`, { method: 'DELETE' })
