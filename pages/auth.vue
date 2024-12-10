@@ -2,8 +2,8 @@
     <div id="AuthPage" class="w-full h-[100vh] h-screen pt-32">
         <div class="w-full">
             <div class="w-full flex items-center justify-center gap-2.5 p-2">
-                <img class="w-[35px]" src="/threads-logo.png">
-                <span class="font-bold text-2xl text-white">Threads</span>
+                <img class="w-[35px]" src="/uga-logo.png">
+                <span class="font-bold text-2xl text-white">Uga</span>
             </div>
 
             <div class="max-w-[350px] mx-auto px-2 text-white">
@@ -42,7 +42,7 @@ const user = useSupabaseUser()
 
 watchEffect(() => {
     if (user.value) {
-        return navigateTo('/')
+       return navigateTo('/')
     }
 })
 
