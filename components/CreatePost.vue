@@ -114,50 +114,59 @@ const onChange = () => {
 }
 
 const createPost = async () => {
-    let dataOut = null;
-    let errorOut = null;
-
-    isLoading.value = true
-
-    if (fileData.value) {
-        const { data, error } = await client
-            .storage
-            .from('uga-clone-files')
-            .upload(`${uuidv4()}.jpg`, fileData.value)
-
-        dataOut = data;
-        errorOut = error;
-    }
-
-    if (errorOut) {
-        console.log(errorOut)
-        return errorOut
-    }
-
-    let pic = ''
-    if (dataOut) {
-        pic = dataOut.path ? dataOut.path : ''
-    }
-
     try {
-        await useFetch(`/api/create-post/`, {
-            method: 'POST',
-            body: {
-                userId: user.value.identities[0].user_id,
-                name: user.value.identities[0].identity_data.full_name,
-                image: user.value.identities[0].identity_data.avatar_url,
-                text: text.value,
-                picture: pic,
+        isLoading.value = true
+        let picturePath = ''
+
+        // Upload file if exists
+        if (fileData.value) {
+            console.log('Uploading file...')
+            const { data, error } = await client
+                .storage
+                .from('uga-clone-files')
+                .upload(`${uuidv4()}.jpg`, fileData.value, {
+                    cacheControl: '3600',
+                    upsert: false
+                })
+
+            if (error) {
+                console.error('File upload error:', error)
+                throw error
             }
+
+            console.log('File uploaded successfully:', data)
+            picturePath = data.path
+        }
+
+        // Prepare post data
+        const postData = {
+            userId: user.value.identities[0].user_id,
+            name: user.value.identities[0].identity_data.full_name,
+            image: user.value.identities[0].identity_data.avatar_url,
+            text: text.value,
+            picture: picturePath,
+        }
+
+        console.log('Sending post data:', postData)
+
+        const { data, error } = await useFetch('/api/create-post/', {
+            method: 'POST',
+            body: postData
         })
+
+        if (error.value) {
+            throw error.value
+        }
+
+        console.log('Post created successfully:', data.value)
 
         await userStore.getAllPosts()
         userStore.isMenuOverlay = false
-
         clearData()
-        isLoading.value = false
     } catch (error) {
-        console.log(error)
+        console.error('Error in createPost:', error)
+        alert('Error creating post. Please try again.')
+    } finally {
         isLoading.value = false
     }
 }
